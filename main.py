@@ -6,6 +6,17 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 CHANNEL_NAME = 'current-achievement-hunt'
 GUILD_ID = 1242214818883178638  # get this from your server
 
+# TODO List:
+# - make the bot periodically check for changes:
+#   - cache last dict to disk
+#   - check for new achievements periodically
+#   - if changes are detected, trigger /update to update pinned post
+#   - OPTIONAL: post a message to the channel that an update was done
+# - post a message to the channel when a game is finished
+# - Implement simple caching to prevent excessive server polling
+#   - remember "last update time"
+#   - if query would be made within too short period, return cached data instead
+
 class MyClient(discord.Client):
     async def on_ready(self):
         print('Logged on as', self.user)

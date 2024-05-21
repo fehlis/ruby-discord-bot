@@ -27,14 +27,6 @@ def parse_exophase() -> list:
             escaped_string = line
             break
         
-    # Define the file path
-    #file_path = 'playerGames.json'
-
-    # Read the file content
-    # TODO: remove this and get from server instead
-    #with open(file_path, 'r', encoding='utf-8') as file:
-    #    escaped_string = file.read()
-
     # Remove the leading part
     escaped_string = escaped_string.replace("window.playerGames = '", "").rstrip(",'")
 
