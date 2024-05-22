@@ -1,3 +1,4 @@
+import asyncio
 import discord
 import achievement_parser as aparser
 import os
@@ -34,26 +35,32 @@ class MyClient(discord.Client):
             return
 
         if message.content == '/post':
-            ruby_games = aparser.parse_exophase()
-            postmsg = aparser.generate_message(ruby_games)
-            await self.channel.send(postmsg)
-            print(f'posted message')
-            await message.channel.send('posted!')
+            await self.post(message)
 
         elif message.content == '/update':
-            ruby_games = aparser.parse_exophase()
-            postmsg = aparser.generate_message(ruby_games)
+            await self.update(message)
             
-            # Retrieve the list of pinned messages
-            pinned_messages = await self.channel.pins()
-            if pinned_messages:
-                # Assume we want to edit the first pinned message
-                message_to_edit = pinned_messages[0]
-                # Edit the message content
-                await message_to_edit.edit(content=postmsg)
-                print(f'Edited pinned message: {message_to_edit.id}')
-                await message.channel.send('Updated!')
+    async def post(self, message):
+        ruby_games = aparser.parse_exophase()
+        postmsg = aparser.generate_message(ruby_games)
+        await self.channel.send(postmsg)
+        print(f'posted message')
+        await message.channel.send('posted!')
             
+    async def update(self, message):
+        ruby_games = aparser.parse_exophase()
+        postmsg = aparser.generate_message(ruby_games)
+        
+        # Retrieve the list of pinned messages
+        pinned_messages = await self.channel.pins()
+        if pinned_messages:
+            # Assume we want to edit the first pinned message
+            message_to_edit = pinned_messages[0]
+            # Edit the message content
+            await message_to_edit.edit(content=postmsg)
+            print(f'Edited pinned message: {message_to_edit.id}')
+            await message.channel.send('Updated!')                
+
 intents = discord.Intents.default()
 #intents.message_content = True
 client = MyClient(intents=intents)

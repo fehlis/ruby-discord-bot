@@ -83,9 +83,10 @@ def generate_message(games):
     # Calculate the cutoff timestamp for 5 days ago
     cutoff_timestamp = now - (5 * 24 * 60 * 60)
 
-    #Filter the list to include only items not older than 5 days
+    # Filter the list to include only items not older than 5 days
     recent_games = [item for item in games if item["last_played"] >= cutoff_timestamp]
     
+    # get the most recent finished game and 2 current in progress games
     for game in recent_games:
         if len(current_games) < 2:
             if game['percent'] < 100:
@@ -99,7 +100,7 @@ def generate_message(games):
     
     str = "Recently completed:\n"
     for game in current_completes:
-        str += '- [{}]({}) compeleted on {}\n'.format(game['title'], game['link'], game['completion_date'].strftime('%d %B'))
+        str += '- [{}]({}) completed on {}\n'.format(game['title'], game['link'], game['completion_date'].strftime('%d %B'))
     str += "Currently hunting:\n"
     for game in current_games:
         str += '- [{}]({}) - Progress {}/{}\n'.format(game['title'], game['link'], game['earned_awards'], game['total_awards'])
