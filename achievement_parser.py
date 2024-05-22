@@ -58,7 +58,7 @@ def parse_exophase() -> list:
         entry['title'] = meta['title_original']
         entry['link'] = meta['links'][0]['endpoint'] 
         entry['last_played'] = game['lastplayed']
-        entry['completion_date'] = datetime.datetime.fromtimestamp(game['completion_date'])
+        entry['completion_date'] = datetime.datetime.fromtimestamp(game['completion_date'], datetime.UTC)
         entry['earned_awards'] = game['earned_awards']
         entry['total_awards'] = game['total_awards']
         entry['percent'] = game['percent']
@@ -72,13 +72,17 @@ def parse_exophase() -> list:
 
     return sorted_data
 
+def get_completed(games, timestamp):
+    completed_games = [item for item in games if item["completion_date"] > timestamp]
+    return completed_games
+    
 def generate_message(games):
     # TODO: Generate a message for the given list of games
     current_games = []
     current_completes = []
 
     # Current timestamp
-    now = datetime.datetime.now().timestamp()
+    now = datetime.datetime.now(datetime.UTC).timestamp()
 
     # Calculate the cutoff timestamp for 5 days ago
     cutoff_timestamp = now - (5 * 24 * 60 * 60)
