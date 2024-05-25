@@ -2,6 +2,7 @@ import asyncio
 import datetime
 import discord
 from discord.ext import commands
+#from discord.ext.commands import has_permissions, CheckFailure
 import discord.ext.commands
 import achievement_parser as aparser
 import os
@@ -27,6 +28,7 @@ POLL_EXOPHASE_INTERVAL_SECONDS = 60 * 2 # 2 minutes
 #   - if query would be made within too short period, return cached data instead
 
 intents = discord.Intents.default()
+#intents = discord.Intents.all()
 #intents.message_content = True
 bot = commands.Bot(intents=intents, command_prefix='/')
 
@@ -64,14 +66,21 @@ async def on_message(message):
     print("The message's content was", message.content)
     await bot.process_commands(message)
 
-@bot.command()
-async def post(ctx, message=None):
+@bot.tree.context_menu(name="post")
+#@bot.tree.command(name="post", description="posts current games to channel")
+#@discord.app_commands.describe(message="The message to echo.")
+#@bot.command()
+#@commands.has_permissions(administrator=True)
+async def post(interaction: discord.Interaction, message: discord.Message) -> None:
+#async def post(ctx, message=None):
+    #if ctx.author.permissions_in(channel=ctx.channel).administrator:
+    #    print(f"Poster has administrator permissions: {ctx.author}")    
     ruby_games = update_games_cached()
     postmsg = aparser.generate_message(ruby_games)
     await bot.channel.send(postmsg)
     print(f'posted message')
     if message:
-        await ctx.channel.send('posted!')
+        await interaction.response.send_message('posted!')
 
 @bot.command()
 async def update(ctx, message=None):
@@ -95,6 +104,11 @@ async def update(ctx, message=None):
         print(f'Edited pinned message: {message_to_edit.id}')
         if ctx:
             await ctx.send('Updated!')                
+
+#@_update.error
+#async def update_error(error, ctx):
+#    if isinstance(error, commands.CheckFailure):
+#        await bot.send_message(ctx.message.channel, "Looks like you don't have the perm.")
 
 async def periodic_update():
     while True:
