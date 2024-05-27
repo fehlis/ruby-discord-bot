@@ -56,7 +56,8 @@ def parse_exophase() -> list:
         #title = meta.get('title_original', 'Unknown title')
         #last_played = meta.get('lastupdated', 'Unknown date')
         entry['title'] = meta['title_original']
-        entry['link'] = meta['links'][0]['endpoint'] 
+        entry['platform'] = meta['platforms'][0]['name'] if len(meta['platforms']) > 0 else ''
+        entry['link'] = meta['links'][0]['endpoint'] if len(meta['links']) > 0 else meta['endpoint_overview']
         entry['last_played'] = game['lastplayed']
         entry['completion_date'] = datetime.datetime.fromtimestamp(game['completion_date'], datetime.UTC)
         entry['earned_awards'] = game['earned_awards']
@@ -95,6 +96,7 @@ def generate_message(games):
         if len(current_games) < 2:
             if game['percent'] < 100:
                 current_games.append(game)
+    for game in games:
         if len(current_completes) < 1:
             if game['percent'] == 100:
                 current_completes.append(game)
@@ -104,10 +106,10 @@ def generate_message(games):
     
     str = "Recently completed:\n"
     for game in current_completes:
-        str += '- [{}]({}) completed on {}\n'.format(game['title'], game['link'], game['completion_date'].strftime('%d %B'))
+        str += '- [{} ({})]({}) completed on {}\n'.format(game['title'], game['platform'], game['link'], game['completion_date'].strftime('%d %B'))
     str += "Currently hunting:\n"
     for game in current_games:
-        str += '- [{}]({}) - Progress {}/{}\n'.format(game['title'], game['link'], game['earned_awards'], game['total_awards'])
+        str += '- [{} ({})]({}) - Progress {}/{}\n'.format(game['title'], game['platform'], game['link'], game['earned_awards'], game['total_awards'])
 
     return str
  
