@@ -55,6 +55,7 @@ async def on_ready():
         pinned_message = pinned_messages[0]
         #TODO: might have to use created_at in case the pinned message was never edited
         #pinned_message.created_at
+        bot.last_update_message = pinned_message.content
         bot.last_update = pinned_message.edited_at
         bot.last_completion_check = pinned_message.edited_at
                         
@@ -82,18 +83,18 @@ async def post(ctx, message=None):
 
 @bot.command()
 async def update(ctx, message=None):
-    if not ctx.author.id in authorized_users :
+    if ctx and ctx.author.id not in authorized_users :
         await ctx.send("You're not authorized to use this command.")
         return     
     ruby_games = update_games_cached()
     postmsg = aparser.generate_message(ruby_games)
-    if postmsg == bot.last_update_message:
+    if postmsg.rstrip() == bot.last_update_message:
         print('no update needed.')
         if ctx:
             await ctx.send('no update needed.') 
         return
     
-    bot.last_update_message = postmsg
+    bot.last_update_message = postmsg.rstrip()
 
     # Retrieve the list of pinned messages
     pinned_messages = await bot.channel.pins()
@@ -124,5 +125,13 @@ def update_games_cached() -> list:
     else:
         print("using cached results")
     return bot.cached_ruby_games
+
+""" def check_for_new_games():
+    now = datetime.datetime.now(datetime.UTC)
+    ruby_games = update_games_cached()
+    
+    # Filter the list to include only items not older than 5 days
+    recent_games = [item for item in games if item["last_played"] >= ]
+ """    
 
 bot.run(TOKEN)
