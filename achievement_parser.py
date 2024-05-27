@@ -96,6 +96,7 @@ def generate_message(games):
         if len(current_games) < 2:
             if game['percent'] < 100:
                 current_games.append(game)
+    for game in games:
         if len(current_completes) < 1:
             if game['percent'] == 100:
                 current_completes.append(game)

@@ -15,6 +15,8 @@ GUILD_ID = 1242214818883178638  # get this from your server
 CACHE_TIMEOUT_SECONDS = 60
 POLL_EXOPHASE_INTERVAL_SECONDS = 60 * 2 # 2 minutes
 
+authorized_users = [ 500063988269449216 ]
+
 # TODO List:
 # - make the bot periodically check for changes:
 #   - cache last dict to disk
@@ -61,17 +63,22 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    # don't react to our own messages
+    if message.author == bot.user:
+        return
     print("The message's content was", message.content)
     await bot.process_commands(message)
 
 @bot.command()
 async def post(ctx, message=None):
+    if not ctx.author.id in authorized_users :
+        await ctx.send("You're not authorized to use this command.")
+        return     
     ruby_games = update_games_cached()
     postmsg = aparser.generate_message(ruby_games)
     await bot.channel.send(postmsg)
     print(f'posted message')
-    if message:
-        await ctx.channel.send('posted!')
+    await ctx.channel.send('posted!')
 
 @bot.command()
 async def update(ctx, message=None):
