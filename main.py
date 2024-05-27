@@ -82,6 +82,9 @@ async def post(ctx, message=None):
 
 @bot.command()
 async def update(ctx, message=None):
+    if not ctx.author.id in authorized_users :
+        await ctx.send("You're not authorized to use this command.")
+        return     
     ruby_games = update_games_cached()
     postmsg = aparser.generate_message(ruby_games)
     if postmsg == bot.last_update_message:
