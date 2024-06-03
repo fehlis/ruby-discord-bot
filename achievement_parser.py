@@ -108,10 +108,11 @@ def generate_message(games):
     for game in current_completes:
         str += '- [{} ({})]({}) completed on {}\n'.format(game['title'], game['platform'], game['link'], game['completion_date'].strftime('%d %B'))
     str += "Currently hunting:\n"
-    for game in current_games:
-        str += '- [{} ({})]({}) - Progress {}/{}\n'.format(game['title'], game['platform'], game['link'], game['earned_awards'], game['total_awards'])
-    else:
+    if len(current_games) == 0:
         str += "_None within the last 5 days_"
+    else:
+        for game in current_games:
+            str += '- [{} ({})]({}) - Progress {}/{}\n'.format(game['title'], game['platform'], game['link'], game['earned_awards'], game['total_awards'])
 
     return str
  
