@@ -5,6 +5,8 @@ def preprocess_json(json_string):
     # Replace invalid escape sequences with valid ones
     json_string = json_string.replace('\\\\', '\\')
     json_string = json_string.replace('\\', '')
+    json_string = json_string.replace('"["', '["')
+    json_string = json_string.replace('"]"', '"]')
 
     return json_string[:-2]
 
