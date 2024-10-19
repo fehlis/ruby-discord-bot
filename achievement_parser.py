@@ -1,5 +1,8 @@
 import datetime
-import json, requests
+import json
+
+import requests
+
 
 def preprocess_json(json_string):
     # Replace invalid escape sequences with valid ones
@@ -12,8 +15,9 @@ def preprocess_json(json_string):
 
 def get_exophase_html() -> str:
     # Step 1: Fetch the webpage content
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
     url = 'https://www.exophase.com/user/PureRuby87/'
-    response = requests.get(url)
+    response = requests.get(url, headers=headers)
     if response.status_code != 200:
         raise Exception(f"Failed to load page: {response.status_code}")
     return response.text
@@ -21,9 +25,7 @@ def get_exophase_html() -> str:
 def parse_exophase() -> list:
     ret = []
     
-    # TODO: get exophase html
     html = get_exophase_html()
-    # TODO: parse playerGames text from htmk
     for line in html.split("\n"):
         if "window.playerGames = " in line:
             escaped_string = line
